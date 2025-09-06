@@ -5,13 +5,23 @@ const User = require('../models/User');
 // @route   POST /api/projects
 // @access  Private
 exports.createProject = async (req, res) => {
-    const { name, description } = req.body;
+    const { name, description,members, tags, projectManager, deadline, priority, imageUrl  } = req.body;
     try {
+        const memberIds = members ? [req.user._id, ...members] : [req.user._id];
+        
+        // ✅ THIS IS THE FIX: The variable is now correctly defined before being used.
+        const uniqueMembers = [...new Set(memberIds)];
+
         const newProject = new Project({
             name,
             description,
             owner: req.user._id,
-            members: [req.user._id], // Owner is a member by default
+            members: uniqueMembers,
+            tags,
+            projectManager: projectManager || null,
+            deadline: deadline || null,
+            priority,
+            imageUrl
         });
         const project = await newProject.save();
         res.status(201).json(project);
