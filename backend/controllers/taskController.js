@@ -5,7 +5,7 @@ const Project = require('../models/Project');
 // @route   POST /api/tasks
 // @access  Private
 exports.createTask = async (req, res) => {
-    const { title, description, projectId, assignee, dueDate } = req.body;
+    const { title, description, projectId, assignee, dueDate , imageUrl} = req.body;
     try {
         const project = await Project.findById(projectId);
         if (!project || !project.members.includes(req.user._id)) {
@@ -17,6 +17,7 @@ exports.createTask = async (req, res) => {
             project: projectId,
             assignee,
             dueDate,
+            imageUrl,
             creator: req.user._id,
         });
         const task = await newTask.save();
@@ -64,6 +65,19 @@ exports.updateTask = async (req, res) => {
             { new: true }
         );
         res.json(task);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+
+exports.getMyTasks = async (req, res) => {
+    try {
+        const tasks = await Task.find({ assignee: req.user._id })
+            .populate('project', 'name') // Gets the project name for context
+            .sort({ dueDate: 1 }); 
+        res.json(tasks);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

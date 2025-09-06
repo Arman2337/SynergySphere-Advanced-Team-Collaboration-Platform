@@ -23,5 +23,6 @@ export const getProjectById = (id) => api.get(`/projects/${id}`);
 export const getTasksByProject = (projectId) => api.get(`/tasks/project/${projectId}`);
 export const createTask = (taskData) => api.post('/tasks', taskData);
 export const updateTask = (id, taskData) => api.put(`/tasks/${id}`, taskData);
+export const getMyTasks = () => api.get('/tasks/mytasks'); // 👈 NEWLY ADDED FUNCTION
 
 export default api;

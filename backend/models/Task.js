@@ -12,6 +12,7 @@ const TaskSchema = new mongoose.Schema({
         default: 'To-Do'
     },
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    imageUrl: { type: String, default: '' } 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Task', TaskSchema);
