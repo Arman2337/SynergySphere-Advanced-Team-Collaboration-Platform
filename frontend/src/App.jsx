@@ -7,6 +7,7 @@ import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
 import CreateAccountPage from './pages/CreateAccount.jsx';
 import DashboardPage from './pages/Dashboard.jsx'; 
+import CreateTaskPage from './pages/CreateTaskPage.jsx';
 import ProjectDetailPage from './pages/ProductPage.jsx';
 
 // A wrapper for protected routes that require authentication
@@ -42,6 +43,7 @@ const AppRoutes = () => {
             {/* Protected Routes */}
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/project/:projectId" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
+            <Route path="/project/:projectId/new-task" element={<ProtectedRoute><CreateTaskPage /></ProtectedRoute>} />
             
             {/* Default redirect */}
             <Route path="/" element={<Navigate to="/login" />} />
