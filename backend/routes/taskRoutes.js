@@ -5,12 +5,13 @@ const {
     createTask,
     getTasksByProject,
     updateTask,
-    getMyTasks
+    getMyTasks,
+    getTaskById 
 } = require('../controllers/taskController');
 
 router.route('/').post(protect, createTask);
 router.route('/project/:projectId').get(protect, getTasksByProject);
-router.route('/:id').put(protect, updateTask);
 router.route('/mytasks').get(protect, getMyTasks);
+router.route('/:id').get(protect, getTaskById).put(protect, updateTask);
 
 module.exports = router;
