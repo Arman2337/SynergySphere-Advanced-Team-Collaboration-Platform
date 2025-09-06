@@ -1,11 +1,11 @@
-import CreateAccount from './components/CreateAccount.jsx'; // Corrected import path
+import CreateAccount from './components/CreateAccount';
 import './App.css';
 
 function App() {
   return (
-    <>
+    <div>
       <CreateAccount />
-    </>
+    </div>
   );
 }
 
