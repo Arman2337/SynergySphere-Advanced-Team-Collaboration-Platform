@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import { createProject, searchUsers } from '../api/apiService.js';
+import Sidebar from '../components/sidebar.jsx';
 
 // Reusable Icon Component
 const Icon = ({ path, className = "w-5 h-5" }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}><path d={path} /></svg> );
 
 const CreateProjectPage = () => {
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     
     // State for the form data, matching your detailed UI
     const [formData, setFormData] = useState({
@@ -99,30 +100,7 @@ const CreateProjectPage = () => {
 
     return (
         <div className="flex h-screen font-sans bg-gray-950 text-gray-300">
-            {/* Sidebar */}
-            <aside className="w-64 bg-gray-900 flex flex-col p-4 border-r border-gray-800 flex-shrink-0">
-                <div className="text-2xl font-bold text-white mb-10 flex items-center gap-3">
-                    <span className='bg-emerald-500 p-2 rounded-lg'><Icon path="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.908l-9 5.25a.75.75 0 01-.75 0l-9-5.25a.75.75 0 00-1.06 1.06l9.5 5.5a2.25 2.25 0 002.12 0l9.5-5.5a.75.75 0 10-1.06-1.06z" /></span>
-                    <span>SynergySphere</span>
-                </div>
-                <nav className="flex-1 space-y-2">
-                    <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white font-semibold">
-                        <Icon path="M3.75 6A2.25 2.25 0 016 3.75h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 10.5V6zm12 0A2.25 2.25 0 0118 3.75h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H18a2.25 2.25 0 01-2.25-2.25V6zM3.75 16.5A2.25 2.25 0 016 14.25h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25v-2.25zm12 0a2.25 2.25 0 0118 14.25h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H18a2.25 2.25 0 01-2.25-2.25v-2.25z" />
-                        <span>Projects</span>
-                    </Link>
-                </nav>
-                 <div className="mt-auto flex items-center justify-between border-t border-gray-800 pt-4">
-                    <div className="flex items-center gap-3">
-                        <img src={`https://placehold.co/40x40/1f2937/FFFFFF?text=${user?.name?.charAt(0).toUpperCase()}`} alt="User Avatar" className="w-10 h-10 rounded-full border-2 border-gray-700" />
-                        <div>
-                            <p className="font-semibold text-white">{user?.name}</p>
-                            <p className="text-xs text-gray-500">{user?.email}</p>
-                        </div>
-                    </div>
-                    <button onClick={logout} title="Logout" className="text-gray-400 hover:text-white"><Icon path="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m-3-3l3-3m0 0l-3-3m3 3H9" /></button>
-                </div>
-            </aside>
-
+            <Sidebar />
             <main className="flex-1 bg-gray-950 p-8 overflow-y-auto">
                 <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
                     <header className="flex items-center justify-between mb-8">
