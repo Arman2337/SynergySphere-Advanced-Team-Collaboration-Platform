@@ -20,7 +20,8 @@ const CreateTaskPage = () => {
         title: '',
         assignee: '', // Will hold the user ID
         dueDate: '',
-        description: ''
+        description: '',
+        imageUrl: ''
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -132,6 +133,11 @@ const CreateTaskPage = () => {
                         <div>
                             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-300 mb-1">Deadline</label>
                             <input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleInputChange} className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                        </div>
+
+                        <div>
+                            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
+                            <input type="text" id="imageUrl" name="imageUrl" value={taskData.imageUrl} onChange={handleInputChange} placeholder="https://example.com/image.png" className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
                         </div>
 
                         <div>
