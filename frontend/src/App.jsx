@@ -1,24 +1,64 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './hooks/useAuth';
+
+// Import your page components
+import LoginPage from './pages/LoginPage';
 import CreateAccountPage from './pages/CreateAccount.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import DashboardPage from './pages/Dashboard.jsx';
-import ProjectPage from './pages/ProductPage.jsx'; // 👈 Import the ProjectPage component
-import './App.css';
+import DashboardPage from './pages/Dashboard.jsx'; 
+import ProjectDetailPage from './pages/ProductPage.jsx';
+
+// A wrapper for protected routes that require authentication
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+// A wrapper for public routes (login/register) for authenticated users
+const PublicRoute = ({ children }) => {
+    const { isAuthenticated, loading } = useAuth();
+
+    if (loading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    }
+    
+    return !isAuthenticated ? children : <Navigate to="/dashboard" />;
+}
+
+// Component to handle all application routes
+const AppRoutes = () => {
+    return (
+        <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute><CreateAccountPage /></PublicRoute>} />
+
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/project/:projectId" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
+            
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/login" />} />
+            
+            {/* Fallback for any other route */}
+            <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+    )
+}
 
 function App() {
   return (
-    <Routes>
-      <Route path="/register" element={<CreateAccountPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/dashboard" element={<DashboardPage />} />
-      
-      {/* 👇 Add the new dynamic route for a single project */}
-      <Route path="/project/:projectId" element={<ProjectPage />} /> 
-      
-      {/* Redirect to the login page by default */}
-      <Route path="/" element={<Navigate to="/login" />} /> 
-    </Routes>
+    <AuthProvider>
+        <AppRoutes />
+    </AuthProvider>
   );
 }
 
 export default App;
+
