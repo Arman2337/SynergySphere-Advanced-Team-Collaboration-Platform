@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import CreateAccountPage from './pages/CreateAccount.jsx';
 import DashboardPage from './pages/Dashboard.jsx'; 
 import ProjectDetailPage from './pages/ProductPage.jsx';
+import UserProfilePage from './pages/UserProfile.jsx'; // New import
 
 // A wrapper for protected routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -42,6 +43,7 @@ const AppRoutes = () => {
             {/* Protected Routes */}
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/project/:projectId" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
             
             {/* Default redirect */}
             <Route path="/" element={<Navigate to="/login" />} />
@@ -61,4 +63,3 @@ function App() {
 }
 
 export default App;
-
