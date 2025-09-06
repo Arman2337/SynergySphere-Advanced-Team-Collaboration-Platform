@@ -45,11 +45,31 @@ exports.getTasksByProject = async (req, res) => {
     }
 };
 
+exports.getTaskById = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id).populate('assignee', 'name');
+        if (!task) {
+            return res.status(404).json({ msg: 'Task not found' });
+        }
+
+        // Security check: Ensure user is part of the project
+        const project = await Project.findById(task.project);
+        if (!project.members.includes(req.user._id)) {
+            return res.status(401).json({ msg: 'User not authorized for this project' });
+        }
+
+        res.json(task);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+
 // @desc    Update a task
 // @route   PUT /api/tasks/:id
 // @access  Private
 exports.updateTask = async (req, res) => {
-    const { title, description, assignee, dueDate, status } = req.body;
     try {
         let task = await Task.findById(req.params.id);
         if (!task) {
@@ -61,9 +81,9 @@ exports.updateTask = async (req, res) => {
         }
         task = await Task.findByIdAndUpdate(
             req.params.id,
-            { $set: { title, description, assignee, dueDate, status } },
+            { $set: req.body },
             { new: true }
-        );
+        ).populate('assignee', 'name');
         res.json(task);
     } catch (err) {
         console.error(err.message);
