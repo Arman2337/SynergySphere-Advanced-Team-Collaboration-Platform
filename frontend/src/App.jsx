@@ -11,6 +11,8 @@ import CreateTaskPage from './pages/CreateTaskPage.jsx';
 import ProjectDetailPage from './pages/ProductPage.jsx';
 import UserProfilePage from './pages/UserProfile.jsx'; // New import
 import EditTaskPage from './pages/EditTaskPage.jsx';
+import CreateProjectPage from "./pages/CreateProjectPage.jsx";
+
 
 // A wrapper for protected routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -48,7 +50,7 @@ const AppRoutes = () => {
             <Route path="/project/:projectId/new-task" element={<ProtectedRoute><CreateTaskPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
             <Route path="/project/:projectId/task/:taskId/edit" element={<ProtectedRoute><EditTaskPage /></ProtectedRoute>} />
-            
+            <Route path="/project/new" element={<ProtectedRoute><CreateProjectPage /></ProtectedRoute>} />
             {/* Default redirect */}
             <Route path="/" element={<Navigate to="/login" />} />
             

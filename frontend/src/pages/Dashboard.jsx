@@ -149,10 +149,10 @@ const DashboardPage = () => {
                 <header className="flex items-center justify-between mb-8">
                      <h1 className="text-2xl font-bold text-white">{activeView === 'projects' ? 'Projects' : 'My Tasks'}</h1>
                      {activeView === 'projects' && (
-                        <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-emerald-700 transition-colors">
+                        <Link to="/project/new" className="bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-emerald-700 transition-colors">
                             <Icon path="M12 4.5v15m7.5-7.5h-15" />
                             <span>New Project</span>
-                        </button>
+                        </Link>
                      )}
                 </header>
 

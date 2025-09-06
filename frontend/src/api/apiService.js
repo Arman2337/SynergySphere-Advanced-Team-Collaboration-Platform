@@ -14,6 +14,8 @@ export const login = (userData) => api.post('/auth/login', userData);
 export const logout = () => api.post('/auth/logout');
 export const getProfile = () => api.get('/users/profile');
 
+export const searchUsers = (email) => api.get(`/users/search?email=${email}`);
+
 // Projects
 export const getProjects = () => api.get('/projects');
 export const createProject = (projectData) => api.post('/projects', projectData);
