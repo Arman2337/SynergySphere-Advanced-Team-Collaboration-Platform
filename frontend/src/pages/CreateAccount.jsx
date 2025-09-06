@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
-const CreateAccount = () => {
+// Renamed from CreateAccount to match your App.jsx import
+const CreateAccountPage = () => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -8,37 +11,40 @@ const CreateAccount = () => {
         password: '',
         confirmPassword: ''
     });
-    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [error, setError] = useState('');
+    const { register } = useAuth();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Basic validation
-        if (!termsAccepted) {
-            alert('Please accept the Terms of Service and Privacy Policy');
-            return;
-        }
-        
+        setError(''); // Clear previous errors
+
         if (formData.password !== formData.confirmPassword) {
-            alert('Passwords do not match');
+            setError('Passwords do not match.');
             return;
         }
-        
-        // Handle form submission logic here
-        console.log('Form submitted:', formData);
-        alert('Account created successfully!');
+
+        // Prepare data for the backend API (which expects a single 'name' field)
+        const registrationData = {
+            name: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.email,
+            password: formData.password
+        };
+
+        try {
+            await register(registrationData);
+            // Navigation on success is handled by the register function in AuthContext
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to create account. Please try again.');
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-teal-50 via-green-50 to-white flex items-center justify-center font-sans">
+        <div className="min-h-screen bg-gradient-to-br from-teal-50 via-green-50 to-white flex items-center justify-center font-sans p-4">
             <div className="container mx-auto flex flex-col md:flex-row max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden my-10">
                 
                 {/* Left Side - Hero/Branding Section */}
@@ -63,36 +69,33 @@ const CreateAccount = () => {
                 {/* Right Side - Form Section */}
                 <div className="w-full md:w-1/2 p-12 flex flex-col justify-center">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">Create your account</h1>
-                    <p className="text-gray-500 mb-8">Get started with your team's collaboration hub in seconds.</p>
+                    <p className="text-gray-500 mb-8">
+                        Already have an account?{' '}
+                        <Link to="/login" className="font-semibold text-teal-600 hover:underline">
+                             Log in
+                        </Link>
+                    </p>
+
+                    {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-center">{error}</p>}
 
                     <form onSubmit={handleSubmit}>
                         <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
                             <div className="w-full md:w-1/2 mb-4 md:mb-0">
                                 <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="firstName">First name *</label>
                                 <input
-                                    type="text"
-                                    id="firstName"
-                                    name="firstName"
+                                    type="text" id="firstName" name="firstName"
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                    required
-                                    autoComplete="given-name"
-                                    placeholder="John"
-                                    value={formData.firstName}
-                                    onChange={handleInputChange}
+                                    required autoComplete="given-name" placeholder="John"
+                                    value={formData.firstName} onChange={handleInputChange}
                                 />
                             </div>
                             <div className="w-full md:w-1/2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="lastName">Last name *</label>
                                 <input
-                                    type="text"
-                                    id="lastName"
-                                    name="lastName"
+                                    type="text" id="lastName" name="lastName"
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                    required
-                                    autoComplete="family-name"
-                                    placeholder="Doe"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
+                                    required autoComplete="family-name" placeholder="Doe"
+                                    value={formData.lastName} onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -100,68 +103,32 @@ const CreateAccount = () => {
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email address *</label>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
+                                type="email" id="email" name="email"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                required
-                                autoComplete="email"
-                                placeholder="john.doe@company.com"
-                                value={formData.email}
-                                onChange={handleInputChange}
+                                required autoComplete="email" placeholder="john.doe@company.com"
+                                value={formData.email} onChange={handleInputChange}
                             />
                         </div>
                         
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password *</label>
                             <input
-                                type="password"
-                                id="password"
-                                name="password"
+                                type="password" id="password" name="password"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                required
-                                autoComplete="new-password"
-                                minLength="8"
-                                placeholder="Create a strong password"
-                                value={formData.password}
-                                onChange={handleInputChange}
+                                required autoComplete="new-password" minLength="6"
+                                placeholder="Create a strong password (min. 6 chars)"
+                                value={formData.password} onChange={handleInputChange}
                             />
                         </div>
                         
                         <div className="mb-6">
                             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="confirmPassword">Confirm password *</label>
                             <input
-                                type="password"
-                                id="confirmPassword"
-                                name="confirmPassword"
+                                type="password" id="confirmPassword" name="confirmPassword"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                                required
-                                autoComplete="new-password"
-                                placeholder="Confirm your password"
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
+                                required autoComplete="new-password" placeholder="Confirm your password"
+                                value={formData.confirmPassword} onChange={handleInputChange}
                             />
-                        </div>
-                        
-                        <div className="flex items-start mb-6">
-                            <div className="flex items-center h-5">
-                                <input  
-                                    type="checkbox"  
-                                    id="terms"  
-                                    name="terms"  
-                                    className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"  
-                                    required  
-                                    checked={termsAccepted}
-                                    onChange={(e) => setTermsAccepted(e.target.checked)}
-                                />
-                            </div>
-                            <div className="ml-3 text-sm">
-                                <label htmlFor="terms" className="text-gray-600">
-                                    By creating an account, I agree to the{' '}
-                                    <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-medium text-teal-600 hover:text-teal-700">Terms of Service</a> and{' '}
-                                    <a href="/privacy" target="_blank" rel="noopener noreferrer" className="font-medium text-teal-600 hover:text-teal-700">Privacy Policy</a>
-                                </label>
-                            </div>
                         </div>
                         
                         <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all duration-300">
@@ -174,4 +141,4 @@ const CreateAccount = () => {
     );
 };
 
-export default CreateAccount;
+export default CreateAccountPage;

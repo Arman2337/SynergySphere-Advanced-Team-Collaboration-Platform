@@ -1,44 +1,35 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-// We will create the api file in the next step
-// import api from '../api/axios'; 
+import { useAuth } from '../hooks/useAuth';
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+    const [error, setError] = useState('');
+    const { login } = useAuth();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         try {
-            // This is where you would make the API call
-            // const response = await api.post('/api/auth/login', formData);
-            // console.log('Login successful:', response.data);
-            
-            // For now, we'll just log it and show an alert
-            console.log('Logging in with:', formData);
-            alert('Login successful! (API call is commented out)');
-            
-            // Handle successful login (e.g., redirect to dashboard)
-        } catch (error) {
-            console.error('Login failed:', error.response?.data || error.message);
-            alert('Login failed. Check the console for details.');
+            await login(formData);
+            // Navigation on success is handled by the login function in AuthContext
+        } catch (err) {
+            setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
         }
     };
 
     return (
-        <div className="flex h-screen w-screen bg-slate-50">
+        <div className="flex h-screen w-screen bg-slate-50 font-sans">
             {/* Left Side - Hero Section */}
-            <div className="flex-1 bg-gradient-to-br from-teal-500 to-emerald-600 text-white p-10 flex flex-col justify-center relative max-w-lg lg:max-w-xl">
+            <div className="hidden lg:flex flex-1 bg-gradient-to-br from-teal-500 to-emerald-600 text-white p-12 flex-col justify-center relative">
                 <div className="relative z-10">
                     <h1 className="text-4xl font-bold mb-4">SynergySphere</h1>
                     <h2 className="text-3xl font-semibold mb-4">Welcome Back!</h2>
@@ -56,6 +47,8 @@ const LoginPage = () => {
                             Sign up instead
                         </Link>
                     </p>
+
+                    {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-center">{error}</p>}
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
@@ -93,3 +86,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
