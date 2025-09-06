@@ -75,15 +75,27 @@ exports.updateTask = async (req, res) => {
         if (!task) {
             return res.status(404).json({ msg: 'Task not found' });
         }
+
+        // General security check: user must be a member of the project
         const project = await Project.findById(task.project);
         if (!project.members.includes(req.user._id)) {
-            return res.status(401).json({ msg: 'User not authorized' });
+            return res.status(401).json({ msg: 'User not authorized for this project' });
         }
+
+        // 👇 NEW SECURITY CHECK: Only the assignee can change the status
+        // We check if the request body CONTAINS a 'status' change.
+        // If it does, we verify the user is the assignee.
+        if (req.body.status && task.assignee && task.assignee.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ msg: 'Only the assigned user can change the task status.' });
+        }
+        
+        // If the checks pass, update the task
         task = await Task.findByIdAndUpdate(
             req.params.id,
             { $set: req.body },
             { new: true }
         ).populate('assignee', 'name');
+
         res.json(task);
     } catch (err) {
         console.error(err.message);
@@ -96,6 +108,7 @@ exports.getMyTasks = async (req, res) => {
     try {
         const tasks = await Task.find({ assignee: req.user._id })
             .populate('project', 'name') // Gets the project name for context
+            .populate('assignee', 'name')
             .sort({ dueDate: 1 }); 
         res.json(tasks);
     } catch (err) {
