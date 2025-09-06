@@ -1,4 +1,4 @@
-import CreateAccount from './components/CreateAccount';
+import CreateAccount from './pages/CreateAccount';
 import './App.css';
 
 function App() {
