@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import Sidebar from '../components/sidebar.jsx';
 
 // Icon component matching your existing pattern
 const Icon = ({ path, className = "w-5 h-5", fillRule = "nonzero" }) => (
@@ -12,7 +12,7 @@ const Icon = ({ path, className = "w-5 h-5", fillRule = "nonzero" }) => (
 const UserProfilePage = () => {
     const { user, logout } = useAuth();
     
-    // Settings state - using localStorage for persistence (you may want to integrate with backend later)
+    // Settings state - using localStorage for persistence
     const [settings, setSettings] = useState(() => {
         const savedSettings = localStorage.getItem('userSettings');
         return savedSettings ? JSON.parse(savedSettings) : {
@@ -20,7 +20,7 @@ const UserProfilePage = () => {
             taskReminders: true,
             projectUpdates: false,
             weeklyDigest: true,
-            theme: 'dark' // Since your app uses dark theme
+            theme: 'dark'
         };
     });
 
@@ -43,10 +43,8 @@ const UserProfilePage = () => {
     // Handle profile edit
     const handleEditSubmit = (e) => {
         e.preventDefault();
-        // Here you would typically make an API call to update user profile
         console.log('Profile update:', editData);
         setIsEditing(false);
-        // You might want to update the user context here
     };
 
     const handleEditCancel = () => {
@@ -59,46 +57,7 @@ const UserProfilePage = () => {
 
     return (
         <div className="flex h-screen font-sans bg-gray-950 text-gray-300">
-            {/* Sidebar - consistent with your existing design */}
-            <aside className="w-64 bg-gray-900 flex flex-col p-4 border-r border-gray-800">
-                <div className="text-2xl font-bold text-white mb-10 flex items-center gap-3">
-                    <span className='bg-emerald-500 p-2 rounded-lg'>
-                        <Icon path="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.908l-9 5.25a.75.75 0 01-.75 0l-9-5.25a.75.75 0 00-1.06 1.06l9.5 5.5a2.25 2.25 0 002.12 0l9.5-5.5a.75.75 0 10-1.06-1.06z" fillRule="evenodd"/>
-                    </span>
-                    <span>SynergySphere</span>
-                </div>
-                
-                <nav className="flex-1 space-y-2">
-                    <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
-                        <Icon path="M3.75 6A2.25 2.25 0 016 3.75h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 10.5V6zm12 0A2.25 2.25 0 0118 3.75h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H18a2.25 2.25 0 01-2.25-2.25V6zM3.75 16.5A2.25 2.25 0 016 14.25h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25v-2.25zm12 0a2.25 2.25 0 0118 14.25h2.25a2.25 2.25 0 012.25 2.25v2.25a2.25 2.25 0 01-2.25 2.25H18a2.25 2.25 0 01-2.25-2.25v-2.25z" fillRule="evenodd" />
-                        <span>Projects</span>
-                    </Link>
-                    <Link to="/dashboard?view=tasks" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
-                        <Icon path="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        <span>My Tasks</span>
-                    </Link>
-                </nav>
-                
-                <div className="mt-auto space-y-4">
-                    {/* User Profile Section */}
-                    <div className="flex items-center justify-between border-t border-gray-800 pt-4">
-                        <Link to="/profile" className="flex items-center gap-3">
-                            <img src={`https://placehold.co/40x40/1f2937/FFFFFF?text=${user?.name?.charAt(0).toUpperCase()}`} 
-                                 alt="User Avatar" 
-                                 className="w-10 h-10 rounded-full border-2 border-gray-700" />
-                            <div>
-                                <p className="font-semibold text-white">{user?.name}</p>
-                                <p className="text-xs text-gray-500">{user?.email}</p>
-                            </div>
-                        </Link>
-                        <button onClick={logout} title="Logout" className="text-gray-400 hover:text-white transition-colors">
-                            <Icon path="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m-3-3l3-3m0 0l-3-3m3 3H9" />
-                        </button>
-                    </div>
-                </div>
-            </aside>
-
-            {/* Main Content */}
+            <Sidebar />
             <main className="flex-1 bg-gray-950 p-8 overflow-y-auto">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-white mb-2">Profile & Settings</h1>
@@ -122,7 +81,6 @@ const UserProfilePage = () => {
                                 )}
                             </div>
 
-                            {/* Profile Avatar */}
                             <div className="flex items-center gap-6 mb-8">
                                 <div className="relative">
                                     <img 
@@ -140,7 +98,6 @@ const UserProfilePage = () => {
                                 </div>
                             </div>
 
-                            {/* Profile Form */}
                             {isEditing ? (
                                 <form onSubmit={handleEditSubmit} className="space-y-4">
                                     <div>
@@ -198,13 +155,11 @@ const UserProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* Settings Panel */}
                     <div className="lg:col-span-1">
                         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                             <h2 className="text-xl font-semibold text-white mb-6">Notification Preferences</h2>
                             
                             <div className="space-y-4">
-                                {/* Email Notifications */}
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h3 className="text-white font-medium">Email Notifications</h3>
@@ -222,7 +177,6 @@ const UserProfilePage = () => {
                                     </button>
                                 </div>
 
-                                {/* Task Reminders */}
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h3 className="text-white font-medium">Task Reminders</h3>
@@ -240,7 +194,6 @@ const UserProfilePage = () => {
                                     </button>
                                 </div>
 
-                                {/* Project Updates */}
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h3 className="text-white font-medium">Project Updates</h3>
@@ -258,7 +211,6 @@ const UserProfilePage = () => {
                                     </button>
                                 </div>
 
-                                {/* Weekly Digest */}
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h3 className="text-white font-medium">Weekly Digest</h3>
